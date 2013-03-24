@@ -28,6 +28,45 @@ function Wikify() {
     hide(new RegExp('<' + tag + '( [^>]+)?>[\\s\\S]+?<\\/' + tag + '>', 'gi'));
   }
 
+  function hideTemplates() {
+    var pos = 0,
+      stack = [],
+      tpl,
+      left,
+      right;
+    while (true) {
+      left = txt.indexOf('{{', pos);
+      right = txt.indexOf('}}', pos);
+      if (left === -1 && right === -1 && !stack.length) {
+        break;
+      }
+      if (left !== -1 && (left < right || right === -1)) {
+        stack.push(left);
+        pos = left + 2;
+      }
+      else {
+        left = stack.pop();
+        if (typeof left === 'undefined') {
+          if (right === -1) {
+            pos += 2;
+            continue;
+          }
+          else {
+            left = 0;
+          }
+        }
+        if (right === -1) {
+          right = txt.length;
+        }
+        right += 2;
+        tpl = txt.substring(left, right);
+        // Сюда можно добавить функцию обработки параметров
+        txt = txt.substring(0, left) + '\x01' + hidden.push(tpl) + '\x02' + txt.substr(right);
+        pos = right - tpl.length;
+      }
+    }
+  }
+
   function processText() {
     var i,
       u = '\u00A0'; //unbreakable space
@@ -52,8 +91,8 @@ function Wikify() {
     r(/( |\n|\r)+\{\{(·|•|\*)\}\}/g, '{{$2}}'); //before {{·/•/*}}, usually in templates
     r(/\{\{\s*[Шш]аблон:([\s\S]+?)\}\}/g, '{{$1}}');
     r(/(\{\{\s*)reflist(\s*[\|\}])/ig, '$1примечания$2');
-    hide(/\{\{[\s\S]+?\}\}/g); //templates
 
+    hideTemplates();
     hide(/^ .*/mg);
     hide(/(https?|ftp|news|nntp|telnet|irc|gopher):\/\/[^\s\[\]<>"]+ ?/gi);
     hide(/^#(redirect|перенапр(авление)?)/i);
