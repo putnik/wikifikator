@@ -60,7 +60,6 @@ function Wikify() {
         }
         right += 2;
         tpl = txt.substring(left, right);
-        // Сюда можно добавить функцию обработки параметров
         txt = txt.substring(0, left) + '\x01' + hidden.push(tpl) + '\x02' + txt.substr(right);
         pos = right - tpl.length;
       }
