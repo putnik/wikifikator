@@ -130,8 +130,6 @@ function Wikify() {
     //TAGS
     r(/<<(\S.+\S)>>/g, '"$1"'); //<< >>
     r(/(su[pb]>)-(\d)/g, '$1−$2'); // ->minus
-    r(/&sup2;/gi, '²');
-    r(/&sup3;/gi, '³');
     r(/<(b|strong)>(.*?)<\/(b|strong)>/gi, "'''$2'''");
     r(/<(i|em)>(.*?)<\/(i|em)>/gi, "''$2''");
     r(/^<hr ?\/?>/gim, '----');
@@ -165,19 +163,18 @@ function Wikify() {
     r(/(\s)-(\d)/g, '$1−$2'); //hyphen -> minus
 
     // Entities etc. → Unicode chars
-    r(/&#x([0-9a-f]{1,4});/gi, function (n, a) { //&#x301;
-      return String.fromCharCode(eval('0x' + a.substr(-4)));
-    });
-    r(/&copy;/gi, '©');
-    r(/&reg;/gi, '®');
-    r(/&sect;/gi, '§');
-    r(/&euro;/gi, '€');
-    r(/&yen;/gi, '¥');
-    r(/&pound;/gi, '£');
-    r(/&deg;/g, '°');
-    r(/\(tm\)|&trade;/gi, '™');
-    r(/\.\.\.|&hellip;/g, '…');
-    r(/(^|[^+])\+-(?!\+|-)|&plusmn;/g, '$1±');
+    r(/&(#x[0-9a-f]{2,4}|#[0-9]{3,4}|[0-9a-f]{2,8});/gi, function (s) {
+      var t = document.createElement('textarea');
+      t.innerHTML = s;
+      var c = t.value;
+      if (c.length === 1 && c.charCodeAt(0) > 127) {
+        return c;
+      }
+      return s;
+    }
+    r(/\(tm\)/gi, '™');
+    r(/\.\.\./g, '…');
+    r(/(^|[^+])\+-(?!\+|-)/g, '$1±');
     r(/~=/g, '≈');
     r(/\^2(\D)/g, '²$1');
     r(/\^3(\D)/g, '³$1');
