@@ -264,7 +264,7 @@ function Wikify() {
   }
 
 
-  //check regexp support
+  // Check regexp support
   try {
     txt = 'ая'.replace(/а/g, 'б').replace(/б(?=я)/, 'в');
   }
@@ -276,8 +276,8 @@ function Wikify() {
 
   wpTextbox1.focus();
 
-  //Mozilla/Opera/Safari3
-  if (typeof wpTextbox1.selectionStart !== 'undefined' && (navigator.productSub > 20031000 || window.is_safari || window.is_opera)) {
+  // Modern browsers
+  if (typeof wpTextbox1.selectionStart !== 'undefined') {
     var textScroll = wpTextbox1.scrollTop,
       startPos = wpTextbox1.selectionStart,
       endPos = wpTextbox1.selectionEnd;
@@ -293,7 +293,7 @@ function Wikify() {
     wpTextbox1.selectionEnd = startPos + txt.length;
     wpTextbox1.scrollTop = textScroll;
   }
-  //IE
+  // IE
   else if (document.selection && document.selection.createRange) {
     var range = document.selection.createRange();
     txt = range.text;
