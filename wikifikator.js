@@ -1,5 +1,4 @@
-var wmVersion = '2.0',
-  wmCantWork = 'Викификатор не может работать в вашем браузере',
+var wmCantWork = 'Викификатор не может работать в вашем браузере',
   wmFullText = 'Викификатор обработает ВЕСЬ текст на этой странице. Продолжить?',
   wmTalkPage = 'Викификатор не обрабатывает страницы обсуждения целиком.\n\nВыделите ваше сообщение — обработано будет только оно';
 window.wfPlugins = window.wfPlugins || [];
@@ -251,9 +250,6 @@ function Wikify() {
 
   function processAllText() {
     txt = wpTextbox1.value;
-    if (txt === 'version') {
-      alert('Викификатор ' + wmVersion);
-    }
     processText();
     r(/^[\n\r]+/, '');
     wpTextbox1.value = txt;
