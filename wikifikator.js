@@ -12,7 +12,7 @@ function Wikify() {
     winScroll = document.documentElement.scrollTop;
 
 
-  //functions
+  // FUNCTIONS
 
   function r(r1, r2) {
     txt = txt.replace(r1, r2);
@@ -68,8 +68,8 @@ function Wikify() {
 
   function processText() {
     var i,
-      u = '\u00A0'; //unbreakable space
-    if (window.wgNamespaceNumber % 2 || window.wgNamespaceNumber === 4) { //is talk page
+      u = '\u00A0'; // unbreakable space
+    if (window.wgNamespaceNumber % 2 || window.wgNamespaceNumber === 4) { // is talk page
       u = ' ';
       var sigs = txt.match(/\d\d:\d\d, \d\d? \S{3,8} 20\d\d \(UTC\)/g);
       if (sigs && sigs.length > 1) {
@@ -87,7 +87,7 @@ function Wikify() {
     hideTag('math');
     hideTag('timeline');
 
-    r(/( |\n|\r)+\{\{(·|•|\*)\}\}/g, '{{$2}}'); //before {{·/•/*}}, usually in templates
+    r(/( |\n|\r)+\{\{(·|•|\*)\}\}/g, '{{$2}}'); // before {{·/•/*}}, usually in templates
     r(/\{\{\s*[Шш]аблон:([\s\S]+?)\}\}/g, '{{$1}}');
     r(/(\{\{\s*)reflist(\s*[\|\}])/ig, '$1примечания$2');
 
@@ -98,14 +98,14 @@ function Wikify() {
     hideTag('gallery');
 
 
-    r(/ +(\n|\r)/g, '$1'); //spaces at EOL
+    r(/ +(\n|\r)/g, '$1'); // spaces at EOL
     txt = '\n' + txt + '\n';
 
 
-    //LINKS
+    // LINKS
     r(/(\[\[:?)(category|категория):( *)/ig, '$1Категория:');
     r(/(\[\[:?)(image|изображение|file):( *)/ig, '$1Файл:');
-    //Linked years, centuries and ranges
+    // Linked years, centuries and ranges
     r(/(\(|\s)(\[\[[12]?\d{3}\]\])[\u00A0 ]?(-{1,3}|–|—) ?(\[\[[12]?\d{3}\]\])(\W)/g, '$1$2—$4$5');
     r(/(\[\[[12]?\d{3}\]\]) ?(гг?\.)/g, '$1' + u + '$2');
     r(/(\(|\s)(\[\[[IVX]{1,5}\]\])[\u00A0 ]?(-{1,3}|–|—) ?(\[\[[IVX]{1,5}\]\])(\W)/g, '$1$2—$4$5');
@@ -123,11 +123,11 @@ function Wikify() {
     r(/\[\[ *([^|\[\]]+) *\| *(\1)([a-zа-яё]*) *\]\]/g, '[[$2]]$3');
     r(/\[\[ *([^|\[\]]+)([^|\[\]()]+) *\| *\1 *\]\]\2/g, '[[$1$2]]'); // text repetition after link
     r(/\[\[ *(?!Файл:|Категория:)([a-zA-Zа-яёА-ЯЁ\u00A0-\u00FF %!\"$&'()*,\-—.\/0-9:;=?\\@\^_`’~]+) *\| *([^\|\[\]]+) *\]\]([a-zа-яё]+)/g, '[[$1|$2$3]]'); // "
-    hide(/\[\[[^\]|]+/g); //only link part
+    hide(/\[\[[^\]|]+/g); // only link part
 
 
-    //TAGS
-    r(/<<(\S.+\S)>>/g, '"$1"'); //<< >>
+    // TAGS
+    r(/<<(\S.+\S)>>/g, '"$1"'); // << >>
     r(/(su[pb]>)-(\d)/g, '$1−$2'); // ->minus
     r(/<(b|strong)>(.*?)<\/(b|strong)>/gi, "'''$2'''");
     r(/<(i|em)>(.*?)<\/(i|em)>/gi, "''$2''");
@@ -137,11 +137,11 @@ function Wikify() {
     r(/(\n== *[a-zа-я\s\.:]+ *==\n+)<references *\/>/ig, '$1{' + '{примечания}}');
     hide(/<[a-z][^>]*?>/gi);
 
-    hide(/^(\{\||\|\-).*/mg); //table/row def
-    hide(/(^\||^!|!!|\|\|) *[a-z]+=[^|]+\|(?!\|)/mgi); //cell style
-    hide(/\| +/g); //formatted cell
+    hide(/^(\{\||\|\-).*/mg); // table/row def
+    hide(/(^\||^!|!!|\|\|) *[a-z]+=[^|]+\|(?!\|)/mgi); // cell style
+    hide(/\| +/g); // formatted cell
 
-    r(/[ \t\u00A0]+/g, ' '); //double spaces
+    r(/[ \t\u00A0]+/g, ' '); // double spaces
 
     // Entities etc. → Unicode chars
     r(/&(#x[0-9a-f]{2,4}|#[0-9]{3,4}|[0-9a-f]{2,8});/gi, function (s) {
@@ -174,13 +174,13 @@ function Wikify() {
     r(/^== (.+)[.:] ==$/gm, '== $1 ==');
     r(/^== '''(?!.*'''.*''')(.+)''' ==$/gm, '== $1 ==');
 
-    r(/«|»|“|”|„/g, '"'); //temp
+    r(/«|»|“|”|„/g, '"'); // temp
 
     // Hyphens and en dashes to pretty dashes
-    r(/–/g, '-'); //&ndash; ->  hyphen
+    r(/–/g, '-'); // &ndash; -> hyphen
     r(/(\s)-{1,3} /g, '$1— '); // hyphen -> &mdash;
     r(/(\d)--(\d)/g, '$1—$2'); // -> &mdash;
-    r(/(\s)-(\d)/g, '$1−$2'); //hyphen -> minus
+    r(/(\s)-(\d)/g, '$1−$2'); // hyphen -> minus
 
     // Year and century ranges
     r(/(\(|\s)([12]?\d{3})[\u00A0 ]?(-{1,3}|—) ?([12]?\d{3})(?![\wА-ЯЁа-яё]|-[^ех]|-[ех][\wА-ЯЁа-яё])/g, '$1$2—$4');
@@ -203,7 +203,7 @@ function Wikify() {
     r(/ISBN:\s?(?=[\d\-]{8,17})/, 'ISBN ');
 
     // Insert/delete spaces
-    r(/^([#*:]+)[ \t\f\v]*(?!\{\|)([^ \t\f\v*#:;])/gm, '$1 $2'); //space after #*: unless before table
+    r(/^([#*:]+)[ \t\f\v]*(?!\{\|)([^ \t\f\v*#:;])/gm, '$1 $2'); // space after #*: unless before table
     r(/(\S)[\u00A0 \t](-{1,3}|—)[\u00A0 \t](\S)/g, '$1' + u + '— $3');
     r(/([А-ЯЁ]\.) ?([А-ЯЁ]\.) ?([А-ЯЁ][а-яё])/g, '$1' + u + '$2' + u + '$3');
     r(/([А-ЯЁ]\.)([А-ЯЁ]\.)/g, '$1 $2');
@@ -213,24 +213,24 @@ function Wikify() {
     r(/([^%\/\wА-Яа-яЁё]\d+?(?:[\.,]\d+?)?) ?([%‰])(?!-[А-Яа-яЁё])/g, '$1' + u + '$2'); //5 %
     r(/(\d) ([%‰])(?=-[А-Яа-яЁё])/g, '$1$2'); //5%-й
     r(/([№§])(\s*)(\d)/g, '$1' + u + '$3');
-    //inside ()
+    // inside ()
     r(/\( +/g, '(');
     r(/ +\)/g, ')');
 
-    //Temperature
+    // Temperature
     r(/([\s\d=≈≠≤≥<>—("'|])([+±−\-]?\d+?(?:[.,]\d+?)?)(([ °\^*]| [°\^*])(C|F))(?=[\s"').,;!?|\x01])/gm, '$1$2' + u + '°$5'); //'
 
-    //Dot → comma in numbers
+    // Dot → comma in numbers
     r(/(\s\d+)\.(\d+[\u00A0 ]*[%‰°×])/gi, '$1,$2');
 
-    //Plugins
+    // Plugins
     for (i in window.wfPlugins) {
       if (window.wfPlugins.hasOwnProperty(i)) {
         window.wfPlugins[i](txt, r);
       }
     }
 
-    //"" → «»
+    // "" → «»
     for (i = 1; i <= 2; i++) {
       r(/([\s\x02!|#'"\/(;+\-])"([^"]*)([^\s"(|])"([^a-zа-яё])/ig, '$1«$2$3»$4'); //"
     }
@@ -309,7 +309,7 @@ function Wikify() {
       range.select();
     }
   }
-  // other browsers
+  // Other browsers
   else if (confirm(wmFullText)) {
     processAllText();
   }
