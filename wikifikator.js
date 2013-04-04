@@ -143,15 +143,17 @@ function Wikify() {
     r(/[ \t\u00A0]+/g, ' '); // double spaces
 
     // Entities etc. → Unicode chars
-    r(/&(#x[0-9a-f]{2,4}|#[0-9]{3,4}|[0-9a-f]{2,8});/gi, function (s) {
-      var t = document.createElement('textarea');
-      t.innerHTML = s;
-      var c = t.value;
-      if (c.length === 1 && c.charCodeAt(0) > 127) {
-        return c;
-      }
-      return s;
-    });
+    if (window.wgNamespaceNumber !== 10) {
+      r(/&(#x[0-9a-f]{2,4}|#[0-9]{3,4}|[0-9a-z]{2,8});/gi, function (s) {
+        var t = document.createElement('textarea');
+        t.innerHTML = s;
+        var c = t.value;
+        if (c.length === 1 && c.charCodeAt(0) > 127) {
+          return c;
+        }
+        return s;
+      });
+    }
     r(/\(tm\)/gi, '™');
     r(/\.\.\./g, '…');
     r(/(^|[^+])\+-(?!\+|-)/g, '$1±');
